@@ -1,21 +1,12 @@
 <template>
-  <div class="Login">
-    <el-form
-      :model="ruleForm"
-      status-icon
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-      class="demo-ruleForm"
-    >
-      <el-form-item label="密码" prop="pass">
+  <div class="login">
+    <div class="move-icon" :style="styles" @mouseenter="mouseEnter(0)" @mouseleave="mouseLeave(0)"></div>
+    <el-form :model="ruleForm" status-icon ref="ruleForm" class="demo-ruleForm">
+      <el-form-item prop="pass">
         <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="确认密码" prop="checkPass">
+      <el-form-item prop="checkPass">
         <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="年龄" prop="age">
-        <el-input v-model.number="ruleForm.age"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -26,57 +17,29 @@
 </template>
 
 <script>
+let _interval = []; // eslint-disable-line
 export default {
   name: 'Login',
-  components: {},
   data() {
-    var checkAge = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('年龄不能为空'));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'));
-        } else {
-          if (value < 18) {
-            callback(new Error('必须年满18岁'));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
-    };
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'));
-      } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass');
-        }
-        callback();
-      }
-    };
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'));
-      } else if (value !== this.ruleForm.pass) {
-        callback(new Error('两次输入密码不一致!'));
-      } else {
-        callback();
-      }
-    };
     return {
       ruleForm: {
         pass: '',
         checkPass: '',
         age: ''
       },
-      rules: {
-        pass: [{ validator: validatePass, trigger: 'blur' }],
-        checkPass: [{ validator: validatePass2, trigger: 'blur' }],
-        age: [{ validator: checkAge, trigger: 'blur' }]
+      rules: {},
+      styles: {},
+      tooIconObj: {
+        frame: 120,
+        s: [0],
+        id: null,
+        toolObjs: []
       }
     };
+  },
+  mounted() {
+    // let le = document.getElementsByClassName('move-icon').length;
+    // this.tooIconObj.s = new Array(le).fill(0);
   },
   methods: {
     submitForm(formName) {
@@ -91,7 +54,60 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    mouseEnter(i) {
+      this.normal(i);
+    },
+    mouseLeave(i) {
+      this.reverse(i);
+    },
+    rend(i) {
+      this.styles = {
+        'background-position': '0 -' + 100 * this.tooIconObj.s[i] + 'px'
+      };
+    },
+    normal(i) {
+      let self = this;
+      self.tooIconObj.s[i]++;
+      clearTimeout(_interval[i]);
+      if (self.tooIconObj.s[i] < this.tooIconObj.frame) {
+        self.rend(i);
+        _interval[i] = setTimeout(function() {
+          self.normal(i);
+        }, 16);
+      } else {
+        self.tooIconObj.s[i] = self.tooIconObj.frame;
+      }
+    },
+    reverse(i) {
+      let self = this;
+      self.tooIconObj.s[i]--;
+      clearTimeout(_interval[i]);
+      if (this.tooIconObj.s[i] >= 0) {
+        self.rend(i);
+        _interval[i] = setTimeout(function() {
+          self.reverse(i);
+        }, 16);
+      } else {
+        self.tooIconObj.s[i] = 0;
+      }
     }
   }
 };
 </script>
+<style lang="less">
+.move-icon {
+  width: 100px;
+  height: 100px;
+  background-size: 100%;
+  background-position: 0 0;
+  margin: 10px auto 0;
+  background-image: url(../assets/icon-nlp.png);
+}
+
+.login {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
