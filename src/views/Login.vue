@@ -1,17 +1,22 @@
 <template>
   <div class="login">
-    <div class="move-icon" :style="styles" @mouseenter="mouseEnter(0)" @mouseleave="mouseLeave(0)"></div>
     <el-form :model="ruleForm" status-icon ref="ruleForm" class="demo-ruleForm">
+      <el-form-item prop="username">
+        <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+      </el-form-item>
       <el-form-item prop="pass">
-        <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+        <el-input type="text" v-model="ruleForm.pass" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item prop="checkPass">
-        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item>
+      <!-- <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-      </el-form-item>
+      </el-form-item>-->
+      <div
+        class="move-icon"
+        :style="styles"
+        @click="submitForm('ruleForm')"
+        @mouseenter="mouseEnter(0)"
+        @mouseleave="mouseLeave(0)"
+      ></div>
     </el-form>
   </div>
 </template>
@@ -24,8 +29,7 @@ export default {
     return {
       ruleForm: {
         pass: '',
-        checkPass: '',
-        age: ''
+        username: ''
       },
       rules: {},
       styles: {},
@@ -51,9 +55,6 @@ export default {
           return false;
         }
       });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
     },
     mouseEnter(i) {
       this.normal(i);
