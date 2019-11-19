@@ -7,9 +7,6 @@
       <el-form-item prop="pass">
         <el-input type="text" v-model="ruleForm.pass" autocomplete="off"></el-input>
       </el-form-item>
-      <!-- <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-      </el-form-item>-->
       <div
         class="move-icon"
         :style="styles"
@@ -104,6 +101,7 @@ export default {
   background-position: 0 0;
   margin: 10px auto 0;
   background-image: url(../assets/icon-nlp.png);
+  cursor: pointer;
 }
 
 .login {
